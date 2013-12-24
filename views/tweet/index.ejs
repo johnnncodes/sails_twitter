@@ -1,0 +1,28 @@
+<div class="col-md-12">
+
+  <h3>Post a tweet</h3>
+
+  <form method="POST" action="/tweet/store" class="js-tweet-form form-inline" role="form">
+    <input type="text" name="body" class="js-body">
+    <input type="submit" class="btn btn-primary js-submit">
+  </form>
+
+  <h3>Tweets Stream:</h3>
+  <ul id="tweets" class="js-tweets">
+    <% for(var i=0; i<tweets.length; i++) {%>
+      <li class="tweet">
+        <div>
+          <h4><%= tweets[i].author.username %></h4>
+          <p><%= tweets[i].body %></p>
+        </div>
+      </li>
+    <% } %>
+  </ul>
+
+</div>
+
+
+<script type="text/javascript">
+  var User = <%- JSON.stringify(session.User) %>,
+      test = {title: 'haha'};
+</script>
