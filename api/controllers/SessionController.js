@@ -22,7 +22,7 @@ module.exports = {
 
   /**
    * Action blueprints:
-   *    `/sessions/create`
+   *    `/session/create`
    */
    create: function (req, res) {
     return res.view();
@@ -31,7 +31,7 @@ module.exports = {
 
   /**
    * Action blueprints:
-   *    `/sessions/store`
+   *    `/session/store`
    */
    store: function (req, res) {
 

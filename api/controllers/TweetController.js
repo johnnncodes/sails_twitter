@@ -20,8 +20,8 @@ module.exports = {
 
   /**
    * Action blueprints:
-   *    `/tweets/index`
-   *    `/tweets`
+   *    `/tweet/index`
+   *    `/tweet`
    */
    index: function (req, res) {
     Tweet.find({sort: 'createdAt ASC'}, function(err, tweets) {
@@ -52,7 +52,7 @@ module.exports = {
 
   /**
    * Action blueprints:
-   *    `/tweets/store`
+   *    `/tweet/store`
    */
    store: function (req, res) {
 
@@ -77,9 +77,6 @@ module.exports = {
     });
   },
 
-  // This action works with app.js socket.get('/user/subscribe') to
-  // subscribe to the User model classroom and instances of the user
-  // model
   subscribe: function(req, res) {
     Tweet.subscribe(req.socket);
   },

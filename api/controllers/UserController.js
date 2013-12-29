@@ -23,7 +23,7 @@ module.exports = {
 
   /**
    * Action blueprints:
-   *    `/users/index` or `/users`
+   *    `/user/index` or `/user`
    */
   index: function (req, res) {
     User.find({}, function(err, users) {
@@ -34,7 +34,7 @@ module.exports = {
 
   /**
    * Action blueprints:
-   *    `/users/create`
+   *    `/user/create`
    */
   create: function (req, res) {
     res.view();
@@ -42,7 +42,7 @@ module.exports = {
 
   /**
    * Action blueprints:
-   *    `/users/store`
+   *    `/user/store`
    */
   store: function (req, res) {
     var username = req.param('username');
