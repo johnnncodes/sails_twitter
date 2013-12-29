@@ -17,6 +17,8 @@
 
 var bcrypt = require('bcrypt');
 
+var async = require("async");
+
 module.exports = {
 
   /**
@@ -46,24 +48,35 @@ module.exports = {
     var username = req.param('username');
     var password = req.param('password');
 
-    bcrypt.hash(password, 10, function(err, hash) {
-      if (err) return res.send('An error occured', 500);
+    // validate inputs
+    var validator = ValidatorService.make();
+    validator.check(username, 'Username is required').notEmpty();
+    validator.check(password, 'Password is required').notEmpty();
 
-      // if there is no password supplied, empty the hash to make the model
-      // validation fail
-      if ( ! password) hash = '';
+    var err = validator.getErrors();
 
-      var inputs = {
-        username: username,
-        password: hash
-      }
+    async.waterfall([
 
-      User.create(inputs, function (err, user) {
+      // check username if available
+      function(callback){
+        User.findOne()
+        .where({ username: username })
+        .then(function(user){
 
-        if (err) {
+          if (user) {
+            err.push('Username already exists');
+          }
 
-          console.log(err);
+          callback(null);
+        }).fail(function(err){
+          return res.send('An error occured', 500);
+        });
+      },
 
+      // redirect if there are any errors
+      function(callback){
+
+        if (err.length > 0) {
           req.session.flash = {
             err: err
           };
@@ -71,10 +84,44 @@ module.exports = {
           return res.redirect('/user/create');
         }
 
-        res.redirect('/session/create');
-        req.session.flash = {};
-      });
+        callback(null);
+      },
+
+      // build inputs
+      function(callback){
+
+        // hash password
+        bcrypt.hash(password, 10, function(err, hash) {
+          if (err) return res.send('An error occured', 500);
+
+          // if there is no password supplied, empty the hash to make the model
+          // validation fail
+          if ( ! password) hash = '';
+
+          var inputs = {
+            username: username,
+            password: hash
+          }
+
+          callback(null, inputs);
+        });
+      },
+
+      // create user
+      function(inputs, callback){
+        User.create(inputs, function (err, user) {
+          if (err) return res.send('An error occured', 500);
+
+          // user is passed in case we will need it later
+          callback(null, user);
+        });
+      }
+
+    ], function (err, user) {
+      res.redirect('/session/create');
+      req.session.flash = {};
     });
+
   },
 
 

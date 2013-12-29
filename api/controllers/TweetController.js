@@ -24,7 +24,7 @@ module.exports = {
    *    `/tweets`
    */
    index: function (req, res) {
-    Tweet.find({sort: 'createdAt DESC'}, function(err, tweets) {
+    Tweet.find({sort: 'createdAt ASC'}, function(err, tweets) {
       if (err) return res.json(err);
 
       var resolved = 0,
@@ -37,8 +37,8 @@ module.exports = {
       }
 
       for(var i = 0; i < tweetsLength; i++) {
-        tweets[i].attachAuthor(function (err, tweet) {
-          resolvedTweets.push(tweet);
+        tweets[i].attachAuthor(i, function (err, tweet, index) {
+          resolvedTweets[index] = tweet;
 
           // return the view after flattening all the tweets
           if (++resolved == tweetsLength) {
@@ -62,17 +62,7 @@ module.exports = {
     }
 
     Tweet.create(data, function (err, tweet) {
-
-      if (err) {
-        var savingTweetError = [{
-          name: 'savingTweetError',
-          message: 'Something went wrong in saving your tweet, please try again.'
-        }]
-
-        req.session.flash = {
-          err: savingTweetError
-        }
-      }
+      if (err) return res.send('An error occured', 500);
 
       tweet.user(function (err, author) {
         tweet.author = author;

@@ -1,5 +1,4 @@
 <div class="col-md-12">
-
   <h3>Post a tweet</h3>
 
   <form method="POST" action="/tweet/store" class="js-tweet-form form-inline" role="form">
@@ -8,21 +7,10 @@
   </form>
 
   <h3>Tweets Stream:</h3>
-  <ul id="tweets" class="js-tweets">
-    <% for(var i=0; i<tweets.length; i++) {%>
-      <li class="tweet">
-        <div>
-          <h4><%= tweets[i].author.username %></h4>
-          <p><%= tweets[i].body %></p>
-        </div>
-      </li>
-    <% } %>
-  </ul>
-
+  <ul class="tweets js-tweets"></ul>
 </div>
-
 
 <script type="text/javascript">
   var User = <%- JSON.stringify(session.User) %>,
-      test = {title: 'haha'};
+      initialTweets = <%- JSON.stringify(tweets).replace(/</g, '&lt;') %>;
 </script>

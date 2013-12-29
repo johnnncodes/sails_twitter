@@ -38,15 +38,12 @@ module.exports = {
     User.findOneByUsername(req.param('username')).done(function(err, user) {
       if (err) return res.json(err);
 
-      if ( ! user) {
-        var invalidCredentialsError = [{
-          name: 'invalidCredentials',
-          message: 'Invalid username and password combination!'
-        }]
+      var invalidCredentialsError = 'Invalid username and password combination!';
 
+      if ( ! user) {
         req.session.flash = {
-          err: invalidCredentialsError
-        }
+          err: [invalidCredentialsError]
+        };
 
         return res.redirect('/session/create');
       }
@@ -55,14 +52,9 @@ module.exports = {
         if (err) return res.json(err);
 
           if( ! valid) {
-            var invalidCredentialsError = [{
-              name: 'invalidCredentials',
-              message: 'Invalid username and password combination!'
-            }]
-
             req.session.flash = {
-              err: invalidCredentialsError
-            }
+              err: [invalidCredentialsError]
+            };
 
             return res.redirect('/session/create');
           }

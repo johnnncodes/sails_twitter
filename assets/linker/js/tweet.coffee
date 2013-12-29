@@ -1,32 +1,67 @@
-$(".js-tweet-form .js-submit").click (e) ->
-  e.preventDefault()
+# render initial tweets
+if $('.js-tweets').length > 0
+  _.each initialTweets, (tweet) ->
+    liEl = document.createElement('li')
+    liEl.setAttribute('class', 'tweet')
+    divEl = document.createElement('div')
+    h4El = document.createElement('h4')
+    pEl = document.createElement('p')
+    spanEl = document.createElement('span')
 
-  data =
-    body: $('.js-tweet-form .js-body').val()
+    h4El.innerHTML = tweet.author.username
+    pEl.innerHTML = tweet.body
 
-  $.ajax
-    type: 'POST'
-    url: '/tweet/store'
-    dataType: 'json'
-    data: data
+    createdAt = moment(tweet.createdAt).format('YYYY-MM-DD HH:mm A')
+    spanEl.innerHTML = createdAt
 
-    success: (tweet, textStatus, xhr) =>
-      liEl = document.createElement('li')
-      liEl.setAttribute('class', 'tweet')
-      divEl = document.createElement('div')
-      h4El = document.createElement('h4')
-      pEl = document.createElement('p')
+    divEl.appendChild(h4El)
+    divEl.appendChild(pEl)
+    divEl.appendChild(spanEl)
+    liEl.appendChild(divEl)
+    $('.js-tweets').prepend(liEl)
 
-      h4El.innerHTML = tweet.author.username
-      pEl.innerHTML = tweet.body
+# tweets form handler
+if $(".js-tweet-form").length > 0
+  $(".js-tweet-form .js-submit").click (e) ->
+    e.preventDefault()
 
-      divEl.appendChild(h4El)
-      divEl.appendChild(pEl)
-      liEl.appendChild(divEl)
-      $('.js-tweets').prepend(liEl)
+    body = $('.js-tweet-form .js-body').val()
 
-    error: (xhr, textStatus, error) =>
-      # TODO: notify user that something went wrong
+    if body == ''
+      return alert "Tweet can't be empty"
+
+    data =
+      body: body
+
+    $.ajax
+      type: 'POST'
+      url: '/tweet/store'
+      dataType: 'json'
+      data: data
+
+      success: (tweet, textStatus, xhr) =>
+        liEl = document.createElement('li')
+        liEl.setAttribute('class', 'tweet')
+        divEl = document.createElement('div')
+        h4El = document.createElement('h4')
+        pEl = document.createElement('p')
+        spanEl = document.createElement('span')
+
+        h4El.innerHTML = tweet.author.username
+        #pEl.innerHTML = tweet.body
+        $(pEl).text(tweet.body) # escape html?
+
+        createdAt = moment(tweet.createdAt).format('YYYY-MM-DD HH:mm A')
+        spanEl.innerHTML = createdAt
+
+        divEl.appendChild(h4El)
+        divEl.appendChild(pEl)
+        divEl.appendChild(spanEl)
+        liEl.appendChild(divEl)
+        $('.js-tweets').prepend(liEl)
+
+      error: (xhr, textStatus, error) =>
+        # TODO: notify user that something went wrong
 
 socket.on "message", messageReceived = (message) ->
 
@@ -43,11 +78,16 @@ socket.on "message", messageReceived = (message) ->
       divEl = document.createElement('div')
       h4El = document.createElement('h4')
       pEl = document.createElement('p')
+      spanEl = document.createElement('span')
 
       h4El.innerHTML = message.data.author.username
       pEl.innerHTML = message.data.body
 
+      createdAt = moment(message.data.createdAt).format('YYYY-MM-DD HH:mm A')
+      spanEl.innerHTML = createdAt
+
       divEl.appendChild(h4El)
       divEl.appendChild(pEl)
+      divEl.appendChild(spanEl)
       liEl.appendChild(divEl)
       $('.js-tweets').prepend(liEl)

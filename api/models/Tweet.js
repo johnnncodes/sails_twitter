@@ -34,11 +34,11 @@ module.exports = {
       });
     },
 
-    attachAuthor: function(cb) {
+    attachAuthor: function(index, cb) {
       var obj = this.toObject();
       this.user(function (err, author) {
         obj.author = author;
-        return cb(null, obj);
+        return cb(null, obj, index);
       });
     },
 

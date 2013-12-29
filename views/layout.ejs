@@ -68,9 +68,10 @@
     <div class="container">
 
       <% if(flash && flash.err) { %>
-        <ul class="alert alert-success">
+        <ul class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
           <% Object.keys(flash.err).forEach(function(error) { %>
-            <li><%- JSON.stringify(flash.err[error].message) %></li>
+            <li><%- flash.err[error] %></li>
           <% }) %>
         </ul>
       <% } %>
@@ -136,6 +137,8 @@
     <script src="/linker/js/sails.io.js"></script>
     <script src="/linker/js/app.js"></script>
     <script src="/linker/js/jquery.min.js"></script>
+    <script src="/linker/js/underscore.min.js"></script>
+    <script src="/linker/js/moment.min.js"></script>
     <script src="/linker/js/bootstrap.min.js"></script>
     <script src="/linker/js/tweet.js"></script>
     <!--SCRIPTS END-->
